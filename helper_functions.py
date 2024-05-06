@@ -31,3 +31,10 @@ def from_binary(binary)->int:
     This function converts the input binary to its corresponding number.
     '''
     return int(binary, 2)
+
+def random_binary_string(length:int)->str:
+    '''
+    This function generates a random binary string of the given length.
+    '''
+    import random
+    return ''.join(random.choice(['0', '1']) for _ in range(length))
