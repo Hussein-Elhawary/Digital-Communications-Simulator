@@ -61,4 +61,3 @@ def diff_bpsk_mapper():
     This function maps the input bits to the corresponding differentially encoded BPSK symbols.
     '''
     print("not implemened")
-
