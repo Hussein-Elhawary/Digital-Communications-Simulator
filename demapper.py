@@ -14,19 +14,19 @@ def coh_bpsk_demapper(noisy_bpsk):
             output_bits[i] = 0
     return output_bits
 
-def qbsk_demapper(input_bits):
+def qpsk_demapper(input_bits):
     '''
     This function maps the input bits to the corresponding Q-PSK symbols.
     '''
     demodulation_bits = np.zeros(len(input_bits) * 2)
     for i in range(len(input_bits)):
         k = i * 2
-        if input_bits[i].real > 0:
+        if input_bits[i].real < 0:
             demodulation_bits[k] = 0
         else:
             demodulation_bits[k] = 1
 
-        if input_bits[i].imag > 0:
+        if input_bits[i].imag < 0:
             demodulation_bits[k + 1] = 0
         else:
             demodulation_bits[k + 1] = 1
@@ -96,7 +96,7 @@ def coh_ask_8_demapper(input_bits):
     output_bits = np.zeros(len(input_bits) * 3)
     for i in range(len(input_bits)):
         K = i * 3
-        if input_bits[i].real > 0 and input_bits[i].real < 2:
+        if input_bits[i].real >= 0 and input_bits[i].real < 2:
             output_bits[K] = output_bits[K + 1] = output_bits[K + 2] = 0
         elif input_bits[i].real >= 2 and input_bits[i].real < 4:
             output_bits[K] = output_bits[K + 1] = 0
@@ -108,8 +108,8 @@ def coh_ask_8_demapper(input_bits):
             output_bits[K] = output_bits[K + 2] = 0
             output_bits[K + 1] = 1
         elif input_bits[i].real < 0 and input_bits[i].real > -2:
-            output_bits[K] = 0
-            output_bits[K + 1] = output_bits[K + 2] = 1
+            output_bits[K] = 1
+            output_bits[K + 1] = output_bits[K + 2] = 0
         elif input_bits[i].real <= -2 and input_bits[i].real > -4:
             output_bits[K] = output_bits[K + 2] = 1
             output_bits[K + 1] = 0
@@ -202,15 +202,18 @@ def coh_bfsk_demapper(input_bits):
     '''
     demodulation_bits = np.zeros(len(input_bits))
     for i in range(len(input_bits)):
-        if input_bits[i].real > input_bits[i].imag:
+        if input_bits[i].real < input_bits[i].imag:
             demodulation_bits[i] = 1
         else:
             demodulation_bits[i] = 0
 
     return demodulation_bits
 
-def diff_bpsk_mapper():
+def diff_psk_demapper(input_bits):
     '''
     This function maps the input bits to the corresponding differentially encoded BPSK symbols.
     '''
-    print("not implemened")
+    # input_bits = np.ceil(input_bits).astype(int)
+    shifted_input_bits = np.roll(input_bits, 1)
+    shifted_input_bits[0] = 1
+    return np.where(input_bits * shifted_input_bits > 0, 1, 0)

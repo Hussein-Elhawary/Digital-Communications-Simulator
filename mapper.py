@@ -14,19 +14,19 @@ def coh_bpsk_mapper(input_bits):
             modulation_bits[i] = 1
     return modulation_bits
 
-def qbsk_mapper(input_bits):
+def qpsk_mapper(input_bits):
     modulation_bits = np.zeros(len(input_bits) // 2, dtype = complex)
     
-    for i in range(0, len(input_bits)):
-        k = 2 * i
-        if input_bits[k] == 0 and input_bits[k + 1] == 0:
-            modulation_bits[i] = -1 - 1j
-        elif input_bits[k] == 0 and input_bits[k + 1] == 1:
-            modulation_bits[i] = -1 + 1j
-        elif input_bits[k] == 1 and input_bits[k + 1] == 0:
-            modulation_bits[i] = 1 - 1j
-        elif input_bits[k] == 1 and input_bits[k + 1] == 1:
-            modulation_bits[i] = 1 + 1j
+    for i in range(0, len(input_bits), 2):
+        k = i // 2
+        if input_bits[i] == 0 and input_bits[i + 1] == 0:
+            modulation_bits[k] = -1 - 1j
+        elif input_bits[i] == 0 and input_bits[i + 1] == 1:
+            modulation_bits[k] = -1 + 1j
+        elif input_bits[i] == 1 and input_bits[i + 1] == 0:
+            modulation_bits[k] = 1 - 1j
+        elif input_bits[i] == 1 and input_bits[i + 1] == 1:
+            modulation_bits[k] = 1 + 1j
     
     return modulation_bits
     
@@ -192,8 +192,15 @@ def coh_bfsk_mapper(input_bits):
 
     return modulation_bits
 
-def diff_bpsk_mapper():
+def diff_psk_mapper(input_bits):
     '''
     This function maps the input bits to the corresponding differentially encoded BPSK symbols.
     '''
-    print("not implemened")
+    out = 1
+    input_bits = np.array(input_bits)
+    for i in range(len(input_bits)):
+        input_bits[i] = ~np.bitwise_xor(out, input_bits[i]).astype(bool)
+        out = input_bits[i]
+    return input_bits.astype(int)
+    
+
