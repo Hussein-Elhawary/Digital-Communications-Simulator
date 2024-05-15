@@ -213,7 +213,11 @@ def diff_psk_demapper(input_bits):
     '''
     This function maps the input bits to the corresponding differentially encoded BPSK symbols.
     '''
-    # input_bits = np.ceil(input_bits).astype(int)
-    shifted_input_bits = np.roll(input_bits, 1)
-    shifted_input_bits[0] = 1
-    return np.where(input_bits * shifted_input_bits > 0, 1, 0)
+
+    input_bits = np.where(input_bits > 0,1,0).astype(int)
+
+    output_bits = np.zeros(len(input_bits) - 1)
+    for i in range(1, len(input_bits)):
+        output_bits[i - 1] = np.bitwise_xor(input_bits[i - 1], input_bits[i])
+
+    return output_bits
